@@ -13,7 +13,7 @@ _A production-grade, real-time event processing system built entirely on AWS Fre
 
 <br />
 
-[Live Demo](https://eventflow.yourdomain.com) · [Documentation](docs/) · [YouTube Series](https://youtube.com/@yourchannel)
+[Live Demo](https://1bzlogu986.execute-api.us-east-1.amazonaws.com/Prod) · [Documentation](docs/) · [YouTube Series](https://youtube.com/@yourchannel)
 
 <br />
 
@@ -151,6 +151,25 @@ npm install
 cd ../backend
 sam build
 sam deploy --guided
+```
+
+### Live API Endpoints
+
+```
+Health Check: https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Prod/health
+Submit Event: https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Prod/events
+```
+
+### Test the API
+
+```bash
+# Health check
+curl https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Prod/health
+
+# Submit an event
+curl -X POST https://YOUR-API-ID.execute-api.us-east-1.amazonaws.com/Prod/events \
+  -H "Content-Type: application/json" \
+  -d '{"eventType":"test","source":"readme","priority":"normal"}'
 ```
 
 ### Local Development

@@ -1,61 +1,103 @@
-# Week 1, Day 1 - Project Setup
+# Week 1, Day 1 - Project Setup & First Lambda Deployment
 
-**Date:** 2024-XX-XX (replace with today's date)
+**Date:** 2026-02-27
 
-## 🎯 What I Worked On Today
+## 🎯 What I Accomplished Today
 
-1. Installed VS Code and essential extensions
-2. Set up Node.js, Git, AWS CLI, SAM CLI, and Docker
-3. Created AWS account with billing alerts
-4. Created GitHub repository
-5. Set up professional project structure
+### Environment Setup
+
+- [x] Installed VS Code with essential extensions
+- [x] Installed Node.js, Git, AWS CLI, SAM CLI, Docker
+- [x] Created AWS account with billing alerts
+- [x] Created IAM user (eventflow-developer)
+- [x] Configured AWS CLI credentials
+
+### Project Setup
+
+- [x] Created GitHub repository
+- [x] Set up professional folder structure
+- [x] Created README, CONTRIBUTING, templates
+- [x] First commit and push to GitHub
+
+### Phase 1: Event Ingestion
+
+- [x] Created SAM template (template.yaml)
+- [x] Built Lambda function with validation
+- [x] Tested locally with SAM CLI
+- [x] Deployed to AWS successfully!
+- [x] Verified live endpoints working
 
 ## 💡 What I Learned
 
-### Development Environment
+### Lambda Concepts
 
-- VS Code is an IDE (Integrated Development Environment) used by professionals
-- Extensions add functionality (AWS Toolkit, GitLens, etc.)
-- The terminal is where you run commands
+- **Handler Function:** `exports.handler = async (event, context) => {}`
+- **Event Object:** Contains HTTP request data from API Gateway
+- **Context Object:** Contains requestId, function info, remaining time
+- **Cold Start:** First invocation is slower (container initialization)
 
-### Git & Version Control
+### SAM/CloudFormation
 
-- `git init` - Initialize a repository
-- `git remote add origin` - Connect local folder to GitHub
-- `.gitignore` - Tells Git which files to ignore
+- SAM templates are transformed into CloudFormation
+- `AWS::Serverless::Function` creates Lambda + IAM Role automatically
+- `Type: Api` events create API Gateway automatically
+- `!Sub` substitutes variables into strings
+- `!Ref` references parameters or resources
 
-### AWS Fundamentals
+### API Gateway
 
-- Root account vs IAM user (IAM is safer for daily use)
-- Access keys are like username/password for CLI
-- Billing alerts prevent surprise charges
-- `us-east-1` is the most common region
+- Proxy integration passes entire HTTP request to Lambda
+- Response must include: statusCode, headers, body (as string)
+- CORS headers needed for browser access
 
-## 🤔 What Confused Me
+### Troubleshooting I Did
 
-- (Write anything that was unclear)
+1. **CORS Error:** Removed Globals Cors config, let SAM handle it
+2. **Architecture Issue:** Changed arm64 to x86_64 for Windows Docker
+3. **CloudWatch Role Error:** Simplified template, removed API access logging
 
-## 🔗 DVA-C02 Connection
+## 🔗 DVA-C02 Exam Connections
 
-Today's setup connects to several exam topics:
+| Topic              | What I Learned                       | Exam Relevance |
+| ------------------ | ------------------------------------ | -------------- |
+| Lambda             | Handler, event, context, cold starts | ~25% of exam   |
+| API Gateway        | Proxy integration, stages            | ~15% of exam   |
+| SAM/CloudFormation | IaC, transforms, intrinsic functions | ~15% of exam   |
+| IAM                | Execution roles, least privilege     | ~15% of exam   |
+| CloudWatch         | Automatic Lambda logging             | ~10% of exam   |
 
-- **IAM**: Creating users, policies, access keys
-- **AWS CLI**: Configuration and usage
-- **Regions**: Understanding us-east-1 as default
-- **Security**: Best practices for credential management
+## 📊 Resources Created
 
-## 📺 YouTube Content Ideas
+| Resource    | Name                                | Purpose                 |
+| ----------- | ----------------------------------- | ----------------------- |
+| Lambda      | eventflow-ingestion-dev             | Process incoming events |
+| API Gateway | ServerlessRestApi                   | HTTP endpoints          |
+| Log Group   | /aws/lambda/eventflow-ingestion-dev | Function logs           |
+| IAM Role    | EventIngestionFunctionRole          | Lambda permissions      |
 
-- "How I Set Up My AWS Dev Environment in Under 1 Hour"
-- "AWS Billing Alerts: Protect Your Wallet!"
-- "VS Code Extensions Every AWS Developer Needs"
+## 🔗 My Live API
 
-## ✅ Tomorrow's Goals
+```
+Health: https://[MY-API-ID].execute-api.us-east-1.amazonaws.com/Prod/health
+Events: https://[MY-API-ID].execute-api.us-east-1.amazonaws.com/Prod/events
+```
 
-- [ ] Make first commit
-- [ ] Push to GitHub
-- [ ] Start building the SAM template
+## 📺 YouTube Video Ideas
 
-## 🎉 Small Win
+1. "I Deployed My First Lambda Function in Under an Hour"
+2. "SAM vs CloudFormation: What Beginners Need to Know"
+3. "3 Errors Every Beginner Makes with SAM (And How to Fix Them)"
 
-I have a professional development environment set up from scratch!
+## ✅ Tomorrow's Goals (Phase 2)
+
+- [ ] Add SQS queue for reliable message processing
+- [ ] Create Dead Letter Queue for failed events
+- [ ] Build processor Lambda
+- [ ] Implement retry logic
+
+## 🎉 Wins Today
+
+1. Went from not knowing VS Code to deploying on AWS!
+2. Fixed 3 deployment errors on my own (with guidance)
+3. Have a LIVE API anyone can call!
+4. Understood Lambda cold starts and event structure
