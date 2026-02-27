@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  EventFlow - Serverless Event Processing Pipeline
+  Built for AWS DVA-C02 certification preparation
+
+# ============================================================================
+# GLOBAL CONFIGURATION
+# ============================================================================
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 29
+    MemorySize: 128
+    Tracing: Active
+    Environment:
+      Variables:
+        STAGE: !Ref Stage
+        LOG_LEVEL: INFO
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+
+# ============================================================================
+# PARAMETERS
+# ============================================================================
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Deployment stage (environment)
+
+# ============================================================================
+# RESOURCES
+# ============================================================================
+Resources:
+  # --------------------------------------------------------------------------
+  # LAMBDA FUNCTION: Event Ingestion
+  # --------------------------------------------------------------------------
+  EventIngestionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "eventflow-ingestion-${Stage}"
+      Description: Receives and validates incoming events from API Gateway
+      CodeUri: src/
+      Handler: handlers/eventIngestion.handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          FUNCTION_NAME: EventIngestion
+      Events:
+        IngestEvent:
+          Type: Api
+          Properties:
+            Path: /events
+            Method: POST
+        HealthCheck:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: GET
+      Tags:
+        Project: EventFlow
+        Component: Ingestion
+        Environment: !Ref Stage
+
+  # --------------------------------------------------------------------------
+  # CLOUDWATCH LOG GROUP
+  # --------------------------------------------------------------------------
+  EventIngestionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/eventflow-ingestion-${Stage}"
+      RetentionInDays: 7
+
+# ============================================================================
+# OUTPUTS
+# ============================================================================
+Outputs:
+  ApiUrl:
+    Description: URL of the EventFlow API
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Export:
+      Name: !Sub "${AWS::StackName}-ApiUrl"
+
+  EventsEndpoint:
+    Description: Endpoint to submit events
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/events"
+    Export:
+      Name: !Sub "${AWS::StackName}-EventsEndpoint"
+
+  HealthEndpoint:
+    Description: Health check endpoint
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/health"
+    Export:
+      Name: !Sub "${AWS::StackName}-HealthEndpoint"
+
+  EventIngestionFunctionArn:
+    Description: ARN of the Event Ingestion Lambda function
+    Value: !GetAtt EventIngestionFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-EventIngestionFunctionArn"
