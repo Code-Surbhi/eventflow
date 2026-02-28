@@ -34,7 +34,7 @@ EventFlow is a **serverless event processing pipeline** that demonstrates produc
 - **NoSQL data storage** in DynamoDB with Streams
 - **Comprehensive observability** using X-Ray and CloudWatch
 
-> 💡 **The twist?** The entire infrastructure runs on **AWS Free Tier** — $0/month!
+> 💡 **The twist?** The entire infrastructure runs on **AWS Free Tier** : $0/month!
 
 ---
 
